@@ -1,3 +1,13 @@
 apiVersion: v1
-entries: {}
-generated: "2024-01-01T0:00:00.000000000Z"
+entries:
+  external-dns:
+  - apiVersion: v2
+    created: "2024-02-02T21:10:40.663299543Z"
+    description: Helm Chart for deploying external-dns for Pi-Hole
+    digest: 1fb0807f5d4bf4710b67386b14125988c0b743565c663ce03c1d46d4f0886169
+    name: external-dns
+    type: application
+    urls:
+    - https://github.com/IAreKyleW00t/helm-charts/releases/download/external-dns-1.0.0/external-dns-1.0.0.tgz
+    version: 1.0.0
+generated: "2024-02-02T21:10:40.663305845Z"
