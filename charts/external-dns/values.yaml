@@ -1,0 +1,32 @@
+external-dns:
+  image: registry.k8s.io/external-dns/external-dns:v0.14.0
+  imagePullPolicy: IfNotPresent
+  sources: ["service", "ingress"]
+  registry: noop
+  policy: upsert-only
+  provider: pihole
+
+pihole:
+  server: ""
+  secret:
+    create: true
+    name: pihole-credentials
+    key: credentials
+    password: ""
+
+rbac:
+  create: true
+  name: external-dns
+
+serviceAccount:
+  create: true
+  name: external-dns
+  annotations: {}
+
+podAnnotations: {}
+
+podLabels: {}
+
+annotations: {}
+
+labels: {}

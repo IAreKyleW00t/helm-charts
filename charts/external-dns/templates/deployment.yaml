@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: external-dns
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "external-dns.labels" . | nindent 4 }}
+    {{- with .Values.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- with .Values.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "external-dns.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "external-dns.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      securityContext:
+        fsGroup: 65534 # For ExternalDNS to be able to read Kubernetes token files
+      containers:
+        - name: external-dns
+          image: {{ index .Values "external-dns" "image" }}
+          imagePullPolicy: {{ index .Values "external-dns" "imagePullPolicy" }}
+          env:
+            - name: EXTERNAL_DNS_PIHOLE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.pihole.secret.name }}
+                  key: {{ .Values.pihole.secret.key }}
+          args:
+            {{-  range index .Values "external-dns" "sources" }}
+            - --source={{ . }}
+            {{- end }}
+            - --registry={{ index .Values "external-dns" "registry" }}
+            - --policy={{ index .Values "external-dns" "policy" }}
+            - --provider={{ index .Values "external-dns" "provider" }}
+            - --pihole-server={{ .Values.pihole.server }}
