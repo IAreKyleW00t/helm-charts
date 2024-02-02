@@ -1,6 +1,8 @@
 # Helm Charts
 
-My Helm Charts stored and hosted with GitHub Pages using the [helm/chart-releaser-action](https://github.com/helm/chart-releaser-action)!
+My custom Helm Charts, hosted on GitHub Pages using the [helm/chart-releaser-action](https://github.com/helm/chart-releaser-action)!
+
+<picture><image alt="Repobeats graph" src="https://repobeats.axiom.co/api/embed/333c799c1815c68de1930be4fd752e9bb226b171.svg"></picture>
 
 ## Usage
 
