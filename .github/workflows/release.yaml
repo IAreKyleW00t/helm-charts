@@ -1,0 +1,94 @@
+---
+name: Helm Release
+on:
+  workflow_dispatch:
+    inputs:
+      release:
+        description: Release new Charts
+        type: boolean
+        default: false
+        required: false
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/release.yaml
+      - charts/**
+  pull_request:
+    branches: [main]
+    paths:
+      - .github/workflows/release.yaml
+      - charts/**
+
+jobs:
+  metadata:
+    runs-on: ubuntu-latest
+    outputs:
+      charts: ${{ steps.list.outputs.charts }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+      - name: List Helm Charts
+        id: list
+        run: |
+          (echo "[" && find ./charts/* -maxdepth 0 -type d -exec sh -c 'echo \"$(basename {})\",' \; | sed '$ s/.$//' && echo "]") > charts.json
+          echo "charts=$(cat charts.json | jq -Mrc)" >> "$GITHUB_OUTPUT"
+
+  test:
+    runs-on: ubuntu-latest
+    needs: [metadata]
+    strategy:
+      matrix:
+        chart: ${{ fromJSON(needs.metadata.outputs.charts) }}
+    defaults:
+      run:
+        working-directory: "./charts/${{ matrix.chart }}"
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Helm Dependencies
+        id: deps
+        run: helm dependency build
+
+      - name: Helm Lint
+        id: validate
+        run: helm lint
+
+      - name: Helm Template
+        id: template
+        run: helm template ${{ matrix.chart }} .
+
+  release:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    needs: [test]
+    if: (github.ref == 'refs/heads/main' && github.event_name == 'push') || github.event.inputs.release
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "${GITHUB_ACTOR}"
+          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@v1.6.0
+        with:
+          charts_dir: ./charts
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"

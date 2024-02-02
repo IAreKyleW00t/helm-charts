@@ -1,0 +1,24 @@
+---
+area/github:
+  - changed-files:
+      - any-glob-to-any-file:
+          - ".github/**/*"
+          - .gitignore
+area/kubernetes:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "charts/*/templates/*"
+      - all-globs-to-all-files:
+          - "!charts/*/templates/NOTES.txt"
+area/helm:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "charts/*/*"
+          - "charts/*/charts/**/*"
+          - "charts/*/crds/**/*"
+          - "charts/*/templates/NOTES.txt"
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - README.md
+          - LICENSE

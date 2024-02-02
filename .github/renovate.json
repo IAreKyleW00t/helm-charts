@@ -1,0 +1,38 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    "docker:enableMajor",
+    ":semanticCommits",
+    ":disableRateLimiting",
+    "helpers:pinGitHubActionDigests",
+    "github>IAreKyleW00t/k2net//.github/renovate/groups.json",
+    "github>IAreKyleW00t/k2net//.github/renovate/labels.json",
+    "github>IAreKyleW00t/k2net//.github/renovate/semanticCommits.json",
+    "github>IAreKyleW00t/k2net//.github/renovate/versions.json"
+  ],
+  "platform": "github",
+  "onboarding": false,
+  "requireConfig": "required",
+  "dependencyDashboardTitle": "Renovate Dashboard 🛡️",
+  "timezone": "America/New_York",
+  "schedule": ["at any time"],
+  "automerge": false,
+  "automergeSchedule": [],
+  "rebaseWhen": "conflicted",
+  "kubernetes": {
+    "fileMatch": ["charts/.+/templates/.+\\.ya?ml$"]
+  },
+  "helm-values": {
+    "fileMatch": ["charts/.+/Chart\\.ya?ml$"]
+  },
+  "regexManagers": [
+    {
+      "fileMatch": [".github/.+/.+\\.ya?ml$"],
+      "matchStrings": [
+        "#\\s?renovate: datasource=(?<datasource>.*?)\\s?.+[_-]container[_-]image: (?<depName>.+):(?<currentValue>[\\w+\\.\\-]*)",
+        "#\\s?renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)\\s?.+[_-]version: (?<currentValue>[\\w+\\.\\-]*)"
+      ]
+    }
+  ]
+}
