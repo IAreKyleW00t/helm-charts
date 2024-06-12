@@ -2,6 +2,15 @@ apiVersion: v1
 entries:
   external-dns:
   - apiVersion: v2
+    created: "2024-06-12T22:11:27.515493387Z"
+    description: Helm Chart for deploying external-dns for Pi-Hole
+    digest: 1272667580eff73b8c4bed9ad22fc2fe4600a5ee3dc7d192f56083119f535862
+    name: external-dns
+    type: application
+    urls:
+    - https://github.com/IAreKyleW00t/helm-charts/releases/download/external-dns-1.0.1/external-dns-1.0.1.tgz
+    version: 1.0.1
+  - apiVersion: v2
     created: "2024-02-02T21:10:40.663299543Z"
     description: Helm Chart for deploying external-dns for Pi-Hole
     digest: 1fb0807f5d4bf4710b67386b14125988c0b743565c663ce03c1d46d4f0886169
@@ -10,4 +19,4 @@ entries:
     urls:
     - https://github.com/IAreKyleW00t/helm-charts/releases/download/external-dns-1.0.0/external-dns-1.0.0.tgz
     version: 1.0.0
-generated: "2024-02-02T21:10:40.663305845Z"
+generated: "2024-06-12T22:11:27.515502514Z"
